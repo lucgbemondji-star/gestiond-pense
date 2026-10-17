@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion | Gestionnaire de dépenses</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">G</span><span>Gestionnaire <span style="font-weight:500;color:#77847f;">de dépenses</span></span></a>
+        <nav class="navbar">
+          <a href="register.html">Créer un compte</a>
+        </nav>
+      </header>
+
+      <main class="page hero">
+        <div class="auth-layout">
+          <section class="auth-aside" aria-label="Présentation">
+            <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">G</span><span>Gestionnaire de dépenses</span></a>
+            <div class="auth-copy">
+              <span class="auth-eyebrow">Vos finances, en toute clarté</span>
+              <h2>Reprenez le contrôle de votre budget.</h2>
+              <p>Un espace simple et intelligent pour suivre vos dépenses, organiser vos comptes et avancer vers vos objectifs.</p>
+            </div>
+            <div class="auth-note">Une vision claire. De meilleures décisions.</div>
+          </section>
+          <section class="auth-panel">
+            <div class="auth-box">
+              <h1>Bon retour</h1>
+              <p class="auth-intro">Connectez-vous pour retrouver votre espace financier.</p>
+              <div id="message" class="alert success" hidden></div>
+              <form id="auth-form" data-action="login">
+                <div class="form-row">
+                  <div>
+                    <label for="email">Adresse e-mail</label>
+                    <input id="email" name="email" type="email" autocomplete="email" placeholder="vous@exemple.com" required />
+                  </div>
+                  <div>
+                    <label for="password">Mot de passe</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Votre mot de passe" required />
+                  </div>
+                  <button type="submit" class="primary">Se connecter</button>
+                  <p>Pas encore inscrit ? <a href="register.html">Créer un compte</a></p>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+  </body>
+</html>

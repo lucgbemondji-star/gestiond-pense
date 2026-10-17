@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Import CSV | Gestionnaire de dépenses</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="dashboard.html"><span class="brand-mark" aria-hidden="true">G</span><span>Gestionnaire <span style="font-weight:500;color:#77847f;">de dépenses</span></span></a>
+        <nav class="navbar">
+          <a href="dashboard.html">Tableau de bord</a>
+          <a href="depenses.html">Dépenses</a>
+          <a href="recurrentes.html">Récurrences</a>
+          <a href="comptes.html">Comptes</a>
+          <a href="categories.html">Catégories</a>
+          <a href="budgets.html">Budgets</a>
+          <a href="import.html">Import</a>
+          <a href="rapports.html">Rapports</a>
+          <a href="#" id="logout-link">Déconnexion</a>
+        </nav>
+      </header>
+
+      <main class="page">
+        <div id="message" class="alert success" hidden></div>
+        <h1>Import CSV</h1>
+        <section class="card">
+          <h2>Importer un fichier</h2>
+          <p>Format CSV requis : date,libellé,montant,devise (une ligne par opération).</p>
+          <div class="grid grid-2">
+            <div><label for="import-compte">Compte à débiter</label><select id="import-compte" required></select></div>
+            <div><label for="import-categorie">Catégorie par défaut</label><select id="import-categorie" required></select></div>
+          </div>
+          <form id="import-form" class="form-row">
+            <input type="file" name="fichier" accept=".csv,text/csv" required />
+            <button type="submit" class="primary">Prévisualiser</button>
+          </form>
+          <pre id="import-preview" class="card" style="white-space: pre-wrap; margin-top: 1rem;">Aucun aperçu.</pre>
+          <button type="button" id="valider-import" class="primary" hidden>Importer les transactions</button>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/import.js"></script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catégories | Gestionnaire de dépenses</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="dashboard.html"><span class="brand-mark" aria-hidden="true">G</span><span>Gestionnaire <span style="font-weight:500;color:#77847f;">de dépenses</span></span></a>
+        <nav class="navbar">
+          <a href="dashboard.html">Tableau de bord</a>
+          <a href="depenses.html">Dépenses</a>
+          <a href="recurrentes.html">Récurrences</a>
+          <a href="comptes.html">Comptes</a>
+          <a href="categories.html">Catégories</a>
+          <a href="budgets.html">Budgets</a>
+          <a href="import.html">Import</a>
+          <a href="rapports.html">Rapports</a>
+          <a href="#" id="logout-link">Déconnexion</a>
+        </nav>
+      </header>
+
+      <main class="page">
+        <div id="message" class="alert success" hidden></div>
+        <h1>Catégories</h1>
+        <section class="card">
+          <h2>Créer une catégorie</h2>
+          <form id="categorie-form" class="form-row">
+            <input type="hidden" name="id" />
+            <div class="grid grid-2">
+              <div>
+                <label for="categorieNom">Nom</label>
+                <input id="categorieNom" name="nom" type="text" maxlength="120" required />
+              </div>
+              <div>
+                <label for="categorieParent">Sous-catégorie de</label>
+                <select id="categorieParent" name="parentId">
+                  <option value="">Aucune</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="primary">Enregistrer</button>
+            <button type="button" id="annuler-categorie" class="secondary" hidden>Annuler</button>
+          </form>
+        </section>
+        <section class="card" style="margin-top: 1.5rem;">
+          <h2>Catégories existantes</h2>
+          <div id="categories-list" class="form-row"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/categories.js"></script>
+  </body>
+</html>

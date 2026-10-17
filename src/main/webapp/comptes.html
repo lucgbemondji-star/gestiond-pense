@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comptes | Gestionnaire de dépenses</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="dashboard.html"><span class="brand-mark" aria-hidden="true">G</span><span>Gestionnaire <span style="font-weight:500;color:#77847f;">de dépenses</span></span></a>
+        <nav class="navbar">
+          <a href="dashboard.html">Tableau de bord</a>
+          <a href="depenses.html">Dépenses</a>
+          <a href="recurrentes.html">Récurrences</a>
+          <a href="comptes.html">Comptes</a>
+          <a href="categories.html">Catégories</a>
+          <a href="budgets.html">Budgets</a>
+          <a href="import.html">Import</a>
+          <a href="rapports.html">Rapports</a>
+          <a href="#" id="logout-link">Déconnexion</a>
+        </nav>
+      </header>
+
+      <main class="page">
+        <div id="message" class="alert success" hidden></div>
+        <h1>Comptes</h1>
+        <section class="card">
+          <h2 id="compte-form-title">Ajouter un compte</h2>
+          <form id="compte-form" class="form-row">
+            <input type="hidden" name="id" />
+            <div class="grid grid-2">
+              <div>
+                <label for="compteNom">Nom</label>
+                <input id="compteNom" name="nom" type="text" maxlength="120" required />
+              </div>
+              <div>
+                <label for="compteType">Type</label>
+                <select id="compteType" name="type">
+                  <option value="ESPECES">Espèces</option>
+                  <option value="MOBILE_MONEY">Mobile Money</option>
+                  <option value="BANQUE">Banque</option>
+                </select>
+              </div>
+              <div>
+                <label for="deviseCompte">Devise</label>
+                <input id="deviseCompte" name="devise" type="text" value="XOF" maxlength="10" required />
+              </div>
+              <div>
+                <label for="soldeInitial">Solde initial</label>
+                <input id="soldeInitial" name="soldeInitial" type="number" step="0.01" value="0" />
+              </div>
+            </div>
+            <button type="submit" class="primary">Enregistrer</button>
+            <button type="button" id="annuler-compte" class="secondary" hidden>Annuler</button>
+          </form>
+        </section>
+
+        <section class="card" style="margin-top: 1.5rem;">
+          <h2>Mes comptes</h2>
+          <div id="comptes-list" class="form-row"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/comptes.js"></script>
+  </body>
+</html>

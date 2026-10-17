@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dépenses | Gestionnaire de dépenses</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="dashboard.html"><span class="brand-mark" aria-hidden="true">G</span><span>Gestionnaire <span style="font-weight:500;color:#77847f;">de dépenses</span></span></a>
+        <nav class="navbar">
+          <a href="dashboard.html">Tableau de bord</a>
+          <a href="depenses.html">Dépenses</a>
+          <a href="recurrentes.html">Récurrences</a>
+          <a href="comptes.html">Comptes</a>
+          <a href="categories.html">Catégories</a>
+          <a href="budgets.html">Budgets</a>
+          <a href="import.html">Import</a>
+          <a href="rapports.html">Rapports</a>
+          <a href="#" id="logout-link">Déconnexion</a>
+        </nav>
+      </header>
+
+      <main class="page">
+        <div id="message" class="alert success" hidden></div>
+        <h1>Dépenses</h1>
+
+        <section class="card">
+          <h2 id="depense-form-title">Ajouter une dépense</h2>
+          <form id="depense-form" class="form-row">
+            <input type="hidden" name="id" />
+            <div class="grid grid-2">
+              <div>
+                <label for="libelle">Libellé</label>
+                <input id="libelle" name="libelle" type="text" maxlength="200" placeholder="Ex. Carrefour" required />
+                <small id="suggestion-categorie" class="empty-state"></small>
+              </div>
+              <div>
+                <label for="categorie">Catégorie</label>
+                <select id="categorie" name="categorieId" required></select>
+              </div>
+              <div>
+                <label for="montant">Montant</label>
+                <input id="montant" name="montant" type="number" min="0.01" step="0.01" required />
+              </div>
+              <div>
+                <label for="devise">Devise</label>
+                <select id="devise" name="devise">
+                  <option value="XOF">XOF</option>
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+              <div>
+                <label for="dateDepense">Date</label>
+                <input id="dateDepense" name="dateDepense" type="date" required />
+              </div>
+              <div>
+                <label for="compte">Compte</label>
+                <select id="compte" name="compteId" required></select>
+              </div>
+              <div><label for="note">Note (facultatif)</label><input id="note" name="note" maxlength="500" /></div>
+            </div>
+            <button type="submit" class="primary">Enregistrer</button>
+            <button type="button" id="annuler-modification" class="secondary" hidden>Annuler la modification</button>
+          </form>
+        </section>
+
+        <section class="card" style="margin-top: 1.5rem;">
+          <h2>Liste des dépenses</h2>
+          <form id="filtres-depenses" class="grid grid-3">
+            <div><label for="recherche">Recherche</label><input id="recherche" name="recherche" /></div>
+            <div><label for="filtre-categorie">Catégorie</label><select id="filtre-categorie" name="categorieId"><option value="">Toutes</option></select></div>
+            <div><label for="filtre-compte">Compte</label><select id="filtre-compte" name="compteId"><option value="">Tous</option></select></div>
+            <div><label for="date-debut">Du</label><input id="date-debut" type="date" name="dateDebut" /></div>
+            <div><label for="date-fin">Au</label><input id="date-fin" type="date" name="dateFin" /></div>
+            <div><label for="montant-min">Montant min. (XOF)</label><input id="montant-min" type="number" min="0" step="1" name="montantMin" /></div>
+            <div><label for="montant-max">Montant max. (XOF)</label><input id="montant-max" type="number" min="0" step="1" name="montantMax" /></div>
+            <button type="submit" class="secondary">Filtrer l’historique</button>
+            <button type="reset" id="reinitialiser-filtres" class="secondary">Effacer les filtres</button>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Libellé</th>
+                  <th>Catégorie</th>
+                  <th>Montant</th>
+                  <th>Date</th>
+                  <th>Compte</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="depenses-body"></tbody>
+            </table>
+          </div>
+          <div id="pagination-depenses" class="form-row" aria-label="Pagination de l’historique"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/depenses.js"></script>
+  </body>
+</html>

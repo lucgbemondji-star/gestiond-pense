@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionnaire de Dépenses</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --danger: #dc2626;
+            --success: #16a34a;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+        }
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group.full {
+            grid-column: span 2;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        input, select {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+        button.secondary {
+            background-color: #64748b;
+        }
+        button.secondary:hover {
+            background-color: #475569;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        .actions button {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+        .badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Gestionnaire de Dépenses</h1>
+        <p>Suivi, conversion de devises (API externe) et API interne sécurisée</p>
+    </header>
+
+    <!-- Formulaire d'ajout / modification -->
+    <div class="card">
+        <h3 id="formTitle" style="margin-top: 0;">Ajouter une nouvelle dépense</h3>
+        <form id="expenseForm">
+            <input type="hidden" id="expenseId">
+            <div class="form-group full">
+                <label for="title">Intitulé de la dépense</label>
+                <input type="text" id="title" required placeholder="Ex: Courses supermarché, Transport...">
+            </div>
+            <div class="form-group">
+                <label for="amount">Montant</label>
+                <input type="number" step="0.01" id="amount" required placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label for="currency">Devise</label>
+                <select id="currency">
+                    <option value="XOF">XOF (Franc CFA)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="GBP">GBP (£)</option>
+                </select>
+            </div>
+            <div class="form-group full">
+                <label for="date">Date</label>
+                <input type="date" id="date" required>
+            </div>
+            <div class="form-group full btn-group">
+                <button type="submit" id="submitBtn">Enregistrer la dépense</button>
+                <button type="button" id="cancelBtn" class="secondary" style="display:none;" onclick="resetForm()">Annuler</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Liste des dépenses -->
+    <div class="card">
+        <h3 style="margin-top: 0;">Historique des Dépenses</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Intitulé</th>
+                    <th>Montant d'origine</th>
+                    <th>Équivalent Local (XOF)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="expenseTableBody">
+                <!-- Les lignes seront injectées dynamiquement ici -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const API_URL = new URL("/api/expenses", window.location.origin).toString();
+    let editingId = null;
+    let expensesById = new Map();
+
+    document.getElementById("date").valueAsDate = new Date();
+
+    async function fetchExpenses() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error("Erreur lors de la récupération des dépenses.");
+            const expenses = await response.json();
+            renderTable(expenses);
+        } catch (error) {
+            console.error(error);
+            document.getElementById("expenseTableBody").innerHTML = `<tr><td colspan="5" style="color: red; text-align: center;">Impossible de joindre le serveur Java (Vérifie qu'il est bien lancé).</td></tr>`;
+        }
+    }
+
+    function renderTable(expenses) {
+        const tbody = document.getElementById("expenseTableBody");
+        expensesById = new Map(expenses.map(expense => [expense.id, expense]));
+        if (expenses.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Aucune dépense enregistrée pour le moment.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = expenses.map(e => `
+            <tr>
+                <td>${e.date}</td>
+                <td><strong>${escapeHtml(e.title)}</strong></td>
+                <td>${e.amount.toFixed(2)} ${e.currency}</td>
+                <td><span class="badge">${e.convertedAmount.toFixed(2)} XOF</span></td>
+                <td class="actions">
+                    <button data-action="edit" data-id="${escapeHtml(e.id)}">Modifier</button>
+                    <button class="secondary" data-action="delete" data-id="${escapeHtml(e.id)}" style="background-color: var(--danger);">Supprimer</button>
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    document.getElementById("expenseTableBody").addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+        if (button.dataset.action === "edit") {
+            const expense = expensesById.get(button.dataset.id);
+            if (expense) editExpense(expense);
+        } else if (button.dataset.action === "delete") {
+            deleteExpense(button.dataset.id);
+        }
+    });
+
+    document.getElementById("expenseForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const data = new URLSearchParams({
+            title: document.getElementById("title").value.trim(),
+            amount: document.getElementById("amount").value,
+            currency: document.getElementById("currency").value,
+            date: document.getElementById("date").value
+        });
+
+        const method = editingId ? "PUT" : "POST";
+        const url = editingId ? `${API_URL}/${editingId}` : API_URL;
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+                body: data.toString()
+            });
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(errText || "Erreur lors de l'enregistrement.");
+            }
+            resetForm();
+            fetchExpenses();
+        } catch (error) {
+            alert("Erreur : " + error.message);
+        }
+    });
+
+    function editExpense(expense) {
+        editingId = expense.id;
+        document.getElementById("expenseId").value = expense.id;
+        document.getElementById("title").value = expense.title;
+        document.getElementById("amount").value = expense.amount;
+        document.getElementById("currency").value = expense.currency;
+        document.getElementById("date").value = expense.date;
+        document.getElementById("formTitle").innerText = "Modifier la dépense";
+        document.getElementById("submitBtn").innerText = "Mettre à jour";
+        document.getElementById("cancelBtn").style.display = "block";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetForm() {
+        editingId = null;
+        document.getElementById("expenseForm").reset();
+        document.getElementById("date").valueAsDate = new Date();
+        document.getElementById("formTitle").innerText = "Ajouter une nouvelle dépense";
+        document.getElementById("submitBtn").innerText = "Enregistrer la dépense";
+        document.getElementById("cancelBtn").style.display = "none";
+    }
+
+    async function deleteExpense(id) {
+        if (!confirm("Es-tu sûr de vouloir supprimer cette dépense ?")) return;
+        try {
+            const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+            if (!response.ok) throw new Error("Échec de la suppression.");
+            fetchExpenses();
+        } catch (error) {
+            alert("Erreur : " + error.message);
+        }
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // Charger les dépenses au chargement de la page
+    fetchExpenses();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dépenses récurrentes | Gestionnaire de dépenses</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="dashboard.html"><span class="brand-mark" aria-hidden="true">G</span><span>Gestionnaire <span style="font-weight:500;color:#77847f;">de dépenses</span></span></a>
+        <nav class="navbar">
+          <a href="dashboard.html">Tableau de bord</a>
+          <a href="depenses.html">Dépenses</a>
+          <a href="recurrentes.html">Récurrences</a>
+          <a href="comptes.html">Comptes</a>
+          <a href="categories.html">Catégories</a>
+          <a href="budgets.html">Budgets</a>
+          <a href="import.html">Import</a>
+          <a href="rapports.html">Rapports</a>
+          <a href="#" id="logout-link">Déconnexion</a>
+        </nav>
+      </header>
+      <main class="page">
+        <div id="message" class="alert success" hidden></div>
+        <h1>Dépenses récurrentes</h1>
+        <section class="card">
+          <h2 id="recurrent-form-title">Créer une dépense récurrente</h2>
+          <form id="recurrent-form" class="form-row">
+            <input type="hidden" name="id" />
+            <div class="grid grid-2">
+              <div><label for="recurrent-libelle">Libellé</label><input id="recurrent-libelle" name="libelle" maxlength="200" required /></div>
+              <div><label for="recurrent-montant">Montant (XOF)</label><input id="recurrent-montant" name="montant" type="number" min="0.01" step="0.01" required /></div>
+              <div><label for="recurrent-categorie">Catégorie</label><select id="recurrent-categorie" name="categorieId" required></select></div>
+              <div><label for="recurrent-compte">Compte</label><select id="recurrent-compte" name="compteId" required></select></div>
+              <div><label for="recurrent-frequence">Fréquence</label><select id="recurrent-frequence" name="frequence" required><option value="MENSUEL">Mensuelle</option><option value="HEBDO">Hebdomadaire</option></select></div>
+              <div><label for="recurrent-date">Prochaine échéance</label><input id="recurrent-date" name="prochaineDate" type="date" required /></div>
+              <label><input name="active" type="checkbox" checked /> Active</label>
+            </div>
+            <button type="submit" class="primary">Enregistrer</button>
+            <button type="button" id="annuler-recurrent" class="secondary" hidden>Annuler</button>
+          </form>
+        </section>
+        <section class="card" style="margin-top: 1.5rem;">
+          <h2>Mes dépenses récurrentes</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Libellé</th><th>Montant</th><th>Fréquence</th><th>Prochaine échéance</th><th>Compte</th><th>État</th><th>Actions</th></tr></thead>
+              <tbody id="recurrentes-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/recurrentes.js"></script>
+  </body>
+</html>

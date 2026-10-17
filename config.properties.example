@@ -1,0 +1,26 @@
+# Configuration de l'application Gestionnaire de dépenses
+# Copiez ce fichier vers config.properties et adaptez les valeurs.
+# Les secrets ne doivent jamais être versionnés dans le dépôt.
+
+# Base de données MySQL
+db.url=jdbc:mysql://localhost:3306/gestion_depenses?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+db.username=depenses_app
+db.password=mot_de_passe_securise
+
+db.pool.maximumPoolSize=10
+db.pool.minimumIdle=2
+
+auth.sessionTimeoutMinutes=120
+
+# API externe de taux de change (exemple)
+api.tauxChange.url=https://open.er-api.com/v6/latest/XOF
+api.tauxChange.timeoutMs=5000
+api.tauxChange.cacheMinutes=60
+api.tauxChange.fallbackXof=1.00
+
+# Tomcat / HTTPS
+server.http.port=8080
+server.https.port=8443
+server.keystore.path=keystore-local.p12
+server.keystore.password=changeit
+server.keystore.type=PKCS12
