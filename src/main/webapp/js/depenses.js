@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   document.getElementById('libelle').addEventListener('input', suggererCategorie);
   document.getElementById('categorie').addEventListener('change', memoriserCorrection);
-  await Promise.all([chargerChoix(), chargerDepenses()]);
+  await chargerChoix();
+  await chargerDepenses();
 });
 
 async function chargerChoix() {
