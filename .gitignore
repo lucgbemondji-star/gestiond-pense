@@ -2,5 +2,14 @@
 target/
 .DS_Store
 *.class
-keystore-local.p12
 config.properties
+*.p12
+*.jks
+*.keystore
+*.cer
+*.crt
+*.key
+*.pem
+.env
+.env.*
+!.env.example

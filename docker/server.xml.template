@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Server port="-1">
+  <Service name="Catalina">
+    <Connector port="__PORT__"
+               protocol="org.apache.coyote.http11.Http11NioProtocol"
+               connectionTimeout="20000"
+               redirectPort="8443" />
+    <Engine name="Catalina" defaultHost="localhost">
+      <Valve className="org.apache.catalina.valves.RemoteIpValve"
+             remoteIpHeader="x-forwarded-for"
+             protocolHeader="x-forwarded-proto" />
+      <Host name="localhost"
+            appBase="webapps"
+            unpackWARs="true"
+            autoDeploy="true" />
+    </Engine>
+  </Service>
+</Server>

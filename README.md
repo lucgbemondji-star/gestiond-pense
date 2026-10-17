@@ -80,6 +80,31 @@ Le projet contient un lanceur Windows qui compile, exécute les tests, configure
 
 Pour un déploiement manuel, configurez un connecteur HTTPS sur le port 8443 dans `server.xml`, définissez le port de redirection HTTP sur 8443, copiez le WAR dans le dossier `webapps` de Tomcat et définissez `DEPENSES_CONFIG` vers le fichier local `config.properties` avant de démarrer Tomcat. La contrainte de transport de l'application redirige les requêtes HTTP vers HTTPS ; le cookie de session est marqué `Secure` et `HttpOnly`.
 
+### Démonstration publique sur Railway
+
+Le `Dockerfile` du projet compile l'application avec Java 17, lance Tomcat 10.1 sur le port fourni par `PORT` et laisse Railway terminer HTTPS. Aucun fichier de configuration ou certificat local n'est inclus dans l'image. Les données doivent être fictives pour une démonstration.
+
+1. Publiez le dépôt GitHub **après avoir vérifié que l'historique ne contient aucun mot de passe, certificat ou donnée personnelle**. Ne publiez pas `config.properties`.
+2. Dans Railway, créez un projet, ajoutez un service **MySQL 8** et déployez le dépôt comme service Docker.
+3. Dans le service MySQL, montez un volume persistant vers `/var/lib/mysql`.
+4. Dans les variables du service Web, ajoutez les références de variables MySQL Railway :
+
+```text
+MYSQLHOST=${{MySQL.MYSQLHOST}}
+MYSQLPORT=${{MySQL.MYSQLPORT}}
+MYSQLDATABASE=${{MySQL.MYSQLDATABASE}}
+MYSQLUSER=${{MySQL.MYSQLUSER}}
+MYSQLPASSWORD=${{MySQL.MYSQLPASSWORD}}
+DB_INITIALIZE_SCHEMA=true
+```
+
+Remplacez `MySQL` dans ces références par le nom exact donné au service de base de données dans votre projet Railway. `DB_INITIALIZE_SCHEMA=true` exécute le `schema.sql` idempotent au démarrage pour initialiser les tables et catégories par défaut ; retirez cette variable après l'initialisation. L'utilisateur MySQL doit pouvoir créer les tables dans la base qui lui a été attribuée.
+
+5. Après le déploiement réussi, générez un domaine public pour le service Web. Railway fournit le HTTPS. Testez la connexion, créez un utilisateur de démonstration et ne transmettez au professeur que l'URL publique et des identifiants fictifs.
+6. Quand le test est terminé, arrêtez/supprimez les services Railway et vérifiez la consommation du crédit d'essai et la persistance avant toute suppression.
+
+Railway impose ses propres limites et son crédit d'essai peut être consommé avant la fin de la période d'essai. Consultez son tableau de consommation ; ne configurez aucun forfait payant si vous ne souhaitez pas engager de frais. Le schéma automatique ne remplace pas une stratégie de migration ou de sauvegarde pour un environnement de production.
+
 ## API REST interne
 
 L'application expose des endpoints sous le préfixe `/api`, avec une réponse JSON uniforme :

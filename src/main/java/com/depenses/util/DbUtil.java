@@ -3,10 +3,6 @@ package com.depenses.util;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -54,50 +50,17 @@ public final class DbUtil {
     }
 
     public static Properties chargerProprietes() {
-        Properties properties = new Properties();
-
-        String cheminConfig = System.getenv("DEPENSES_CONFIG");
-        if (cheminConfig != null && !cheminConfig.isBlank()) {
-            chargerDepuisFichier(properties, Path.of(cheminConfig));
-            return properties;
+        Properties properties = ConfigUtil.getProperties();
+        if (estVide(properties.getProperty("db.url"))) {
+            throw new IllegalStateException("Aucune URL de base de données configurée. Définissez DB_URL ou les variables MySQL, ou créez config.properties.");
         }
-
-        Path[] chemins = {
-                Path.of("config.properties"),
-                Path.of(System.getProperty("user.home"), "gestionnaire-depenses.properties")
-        };
-
-        for (Path chemin : chemins) {
-            if (chargerDepuisFichier(properties, chemin)) {
-                return properties;
-            }
+        if (estVide(properties.getProperty("db.username")) || estVide(properties.getProperty("db.password"))) {
+            throw new IllegalStateException("Les identifiants de la base de données sont absents. Définissez MYSQLUSER et MYSQLPASSWORD ou leurs équivalents DB_USERNAME et DB_PASSWORD.");
         }
-
-        try (InputStream stream = DbUtil.class.getClassLoader().getResourceAsStream("config.properties")) {
-            if (stream != null) {
-                properties.load(stream);
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("Le fichier de configuration est introuvable. Copiez config.properties.example en config.properties.", e);
-        }
-
-        if (properties.isEmpty()) {
-            throw new IllegalStateException("Aucune configuration détectée pour la base de données. Vérifiez la présence du fichier config.properties.");
-        }
-
         return properties;
     }
 
-    private static boolean chargerDepuisFichier(Properties properties, Path chemin) {
-        if (chemin == null || !Files.exists(chemin)) {
-            return false;
-        }
-
-        try (InputStream inputStream = Files.newInputStream(chemin)) {
-            properties.load(inputStream);
-            return true;
-        } catch (IOException e) {
-            throw new IllegalStateException("Impossible de lire le fichier de configuration : " + chemin, e);
-        }
+    private static boolean estVide(String valeur) {
+        return valeur == null || valeur.isBlank();
     }
 }

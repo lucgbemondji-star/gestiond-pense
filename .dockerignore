@@ -1,0 +1,13 @@
+.git
+.tools
+target
+config.properties
+*.p12
+*.jks
+*.keystore
+*.cer
+*.crt
+*.key
+.env
+.env.*
+!.env.example
